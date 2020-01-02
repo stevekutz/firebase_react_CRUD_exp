@@ -10,13 +10,27 @@ function App() {
     const [newSpellName, setNewSpellName] = useState('', 'New Spell Name');
 
     React.useEffect(() => {
-        const fetchData = async () => {
-            const db = firebase.firestore();
-            const data = await db.collection("spells").orderBy('name').get();
-            setSpells(data.docs.map(doc => ({...doc.data(), id: doc.id})));
-        }
+        //const fetchData = async () => {
 
-        fetchData()     
+            const db = firebase.firestore();
+            // this Updates changes without refresh
+            const unsubscribe = db.collection('spells').onSnapshot((snapshot) => {
+                const spellsData = [];
+                snapshot.forEach(doc => spellsData.push( ({...doc.data(), id: doc.id}) ))
+                console.log(spellsData);
+                setSpells(spellsData);
+            }
+            )
+
+
+            // THIS does not update page, refresh is required to see changes
+            // const data = await db.collection("spells").orderBy('name').get();
+            // setSpells(data.docs.map(doc => ({...doc.data(), id: doc.id})));
+        //}
+
+        //fetchData()     
+
+        return unsubscribe
     }, []);
 
     const onCreate = () => {

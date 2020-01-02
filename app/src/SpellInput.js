@@ -4,7 +4,7 @@ import firebase from './firebase';
 
 export const SpellInput = ({spell}) => {
     const [name, setName] = useState(spell.name, 'SpellInput State');
-    
+
     const onUpdate = () => {
         const db = firebase.firestore()
         db.collection('spells').doc(spell.id).set({...spell, name})
