@@ -7,6 +7,7 @@ import {SpellInput} from './SpellInput';
 
 function App() {
     const [spells, setSpells] = useState([], 'Spells State');
+    const [newSpellName, setNewSpellName] = useState('', 'New Spell Name');
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -18,10 +19,21 @@ function App() {
         fetchData()     
     }, []);
 
+    const onCreate = () => {
+        const db = firebase.firestore();
+        db.collection('spells').add({name: newSpellName});
+    }
 
   return (
     <React.Fragment> 
         <ul>
+        <input
+            value={newSpellName}
+            onChange={e => setNewSpellName(e.target.value)}
+        />
+
+
+        <button onClick = {onCreate}> Create </button>
             {spells.map((spell, id) => (
                 <li key = {id}>
                 <SpellInput spell = {spell}/>
